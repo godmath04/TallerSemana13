@@ -33,7 +33,7 @@ public class ArbolGrafico extends JPanel {
 
     public void dibujarArbol(Graphics2D g2d, Nodo nodo, int x, int y, int dimensionX, int dimensionY) {
         if (nodo != null) {
-            // Dibuja el nodo actual (puedes personalizar cómo se dibuja el nodo aquí)
+            // Dibuja el nodo actual
             g2d.fillOval(x - 15, y - 15, 30, 30);
             g2d.drawString(nodo.etiqueta, x - 10, y + 5);
 
@@ -41,17 +41,28 @@ public class ArbolGrafico extends JPanel {
             nodo.x = x;
             nodo.y = y;
 
-            // Dibuja la línea y llama recursivamente para el nodo izquierdo
-            if (nodo.izquierda != null) {
-                g2d.drawLine(x, y, x - dimensionX, y + dimensionY);
-                dibujarArbol(g2d, nodo.izquierda, x - dimensionX, y + dimensionY, dimensionX / 2, dimensionY);
+            // Dibujar y llamar recursivamente para cada hijo
+            if (nodo.izquierda1 != null) {
+                g2d.drawLine(x, y, x - (dimensionX * 2), y + dimensionY);
+                dibujarArbol(g2d, nodo.izquierda1, x - (dimensionX * 2), y + dimensionY, dimensionX / 2, dimensionY);
             }
-
-            // Dibuja la línea y llama recursivamente para el nodo derecho
-            if (nodo.derecha != null) {
+            if (nodo.izquierda2 != null) {
+                g2d.drawLine(x, y, x - dimensionX, y + dimensionY);
+                dibujarArbol(g2d, nodo.izquierda2, x - dimensionX, y + dimensionY, dimensionX / 2, dimensionY);
+            }
+            if (nodo.centro0 != null) {
+                g2d.drawLine(x, y, x, y + dimensionY);
+                dibujarArbol(g2d, nodo.centro0, x, y + dimensionY, dimensionX / 2, dimensionY);
+            }
+            if (nodo.derecha2 != null) {
                 g2d.drawLine(x, y, x + dimensionX, y + dimensionY);
-                dibujarArbol(g2d, nodo.derecha, x + dimensionX, y + dimensionY, dimensionX / 2, dimensionY);
+                dibujarArbol(g2d, nodo.derecha2, x + dimensionX, y + dimensionY, dimensionX / 2, dimensionY);
+            }
+            if (nodo.derecha1 != null) {
+                g2d.drawLine(x, y, x + (dimensionX * 2), y + dimensionY);
+                dibujarArbol(g2d, nodo.derecha1, x + (dimensionX * 2), y + dimensionY, dimensionX / 2, dimensionY);
             }
         }
-}
+    }
+
 }

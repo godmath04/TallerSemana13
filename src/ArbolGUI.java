@@ -25,11 +25,12 @@ public class ArbolGUI {
     private JButton btnPostorden;
     private JButton btnMatrizAdyacencia;
 
-    private Arbol arbol=new Arbol();
-    private ArbolGrafico arbolGrafico=new ArbolGrafico(arbol);
-    private DefaultTableModel modeloTabla=new DefaultTableModel();
+    private Arbol arbol = new Arbol();
+    private ArbolGrafico arbolGrafico = new ArbolGrafico(arbol);
+    private DefaultTableModel modeloTabla = new DefaultTableModel();
 
     public ArbolGUI() {
+        cbIzqDer.setModel(new DefaultComboBoxModel<>(new Integer[]{0, 1, 2, 3, 4}));
 
         btnAgregarNodo.addActionListener(new ActionListener() {
             @Override
@@ -38,19 +39,28 @@ public class ArbolGUI {
                     String etiqueta = arbol.getEtiquetaNodoSiguiente();
                     Nodo nuevoNodo = new Nodo(0, 0, etiqueta);
                     String etiquetaPadre = txtRaiz.getText().trim();
-                    boolean esIzquierda = Boolean.parseBoolean(cbIzqDer.getSelectedItem().toString());
 
-                    Nodo nodoPadre= null;
+                    Nodo nodoPadre = null;
                     for (Nodo nodo : arbol.getNodos()) {
                         if (nodo.etiqueta.equals(etiquetaPadre)) {
                             nodoPadre = nodo;
                             break;
                         }
                     }
-                    arbol.anadirNodo(nuevoNodo, nodoPadre, esIzquierda);
+
+                    if (nodoPadre == null && arbol.getRaiz() != null) {
+                        throw new IllegalArgumentException("El nodo padre no existe");
+                    }
+
+                    // Obtener la posición del hijo seleccionada en el JComboBox
+                    int posicionHijo = (int) cbIzqDer.getSelectedItem();
+
+                    // Agregar el nodo al árbol
+                    arbol.anadirNodo(nuevoNodo, nodoPadre, posicionHijo);
+
+                    // Actualizar el árbol gráfico y la visualización
                     imprimirArbol();
                     dibujarArbolEnPanel();
-
 
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar nodo: " + ex.getMessage());
@@ -98,7 +108,7 @@ public class ArbolGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                    mostrarMatrizAdyacencia();
+                mostrarMatrizAdyacencia();
             }
         });
         btnDibujarArbol.addActionListener(new ActionListener() {
@@ -109,6 +119,7 @@ public class ArbolGUI {
             }
         });
     }
+
     private void dibujarArbolEnPanel() {
         // Obtén el Graphics del panel
         Graphics g = panelArbol.getGraphics();
@@ -134,9 +145,10 @@ public class ArbolGUI {
             int dimensionY = 50;
 
             // Dibujar el árbol centrado verticalmente
-           arbolGrafico.dibujarArbol(g2d, arbol.getRaiz(), x, y, dimensionX, dimensionY);
+            arbolGrafico.dibujarArbol(g2d, arbol.getRaiz(), x, y, dimensionX, dimensionY);
         }
     }
+
     private void imprimirArbol() {
         textArea.setText("");
         textArea.append("Nodos:\n");
@@ -148,14 +160,14 @@ public class ArbolGUI {
     private void mostrarMatrizAdyacencia() {
 
 
-       Object[][] matriz = arbol.getMatrizAdyacencia();
+        Object[][] matriz = arbol.getMatrizAdyacencia();
         String[] nombreColumnas = new String[matriz.length];
         for (int i = 0; i < matriz.length; i++) {
             nombreColumnas[i] = String.valueOf((char) ('A' + i));
         }
 
-        modeloTabla.setDataVector(matriz , nombreColumnas);
-       tbMatrizAdyacencia.setModel(modeloTabla);
+        modeloTabla.setDataVector(matriz, nombreColumnas);
+        tbMatrizAdyacencia.setModel(modeloTabla);
     }
 
     public static void main(String[] args) {
